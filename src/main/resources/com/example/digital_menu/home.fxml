@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.digital_menu.HomeController">
+   <children>
+      <SplitPane orientation="HORIZONTAL" prefWidth="800" prefHeight="600">
+         <items>
+            <VBox fx:id="cartContainer" spacing="10" padding="10">
+               <children>
+                  <Label text="Cart" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                  <ComboBox fx:id="tableNumberComboBox" promptText="Select Table" />
+                  <Button fx:id="orderButton" text="Place Order" onAction="#placeOrder" />
+               </children>
+            </VBox>
+            <ScrollPane>
+               <content>
+                  <VBox fx:id="menuItemsContainer" spacing="15" padding="15" />
+               </content>
+            </ScrollPane>
+         </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

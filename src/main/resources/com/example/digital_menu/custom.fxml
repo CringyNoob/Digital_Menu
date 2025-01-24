@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox spacing="10" alignment="CENTER" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.digital_menu.CustomController">
+    <Label text="Make Your Own Dish" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+    <ComboBox fx:id="sizeSelector" promptText="Select Size" />
+    <ComboBox fx:id="sauceSelector" promptText="Select Sauce" />
+    <ListView fx:id="toppingsSelector" />
+    <Button text="Add to Order" onAction="#addToOrder" />
+    <Label fx:id="confirmationLabel" textFill="green" />
+</VBox>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<FlowPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.digital_menu.MenuController">
+   <children>
+      <AnchorPane prefHeight="725.0" prefWidth="649.0" style="-fx-background-color: #f0ede6;">
+         <children>
+            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@img/logo.png" />
+               </image>
+            </ImageView>
+             <!-- Welcome Label -->
+             <Label fx:id="userNameLabel" layoutX="315.0" layoutY="13.0" prefHeight="63.0" prefWidth="311.0" style="-fx-font-size: 43px; -fx-font-weight: bold; -fx-alignment: center;" text="Welcome!">
+               <font>
+                  <Font name="Material Icons" size="42.0" />
+               </font>
+            </Label>
+         
+                                                 <!-- Logout Button -->
+             <Button fx:id="logoutButton" layoutX="871.0" layoutY="14.0" onAction="#logout" style="-fx-background-color: red; -fx-background-radius: 100;" text="Logout" />
+            <Button layoutX="435.0" layoutY="92.0" mnemonicParsing="false" style="-fx-background-color: #2f4090; -fx-background-radius: 100;" text="Order-List" textFill="WHITE">
+
+      </Button>
+            <Button layoutX="150.0" layoutY="92.0" mnemonicParsing="false" style="-fx-background-radius: 100;" text="Talk with Admin">
+               <graphic>
+         </graphic>
+            </Button>
+            <VBox alignment="TOP_CENTER" layoutY="128.0" prefHeight="700.0" prefWidth="941.0" spacing="10" style="-fx-padding: 20;">
+               <ScrollPane prefHeight="636.0" prefWidth="901.0">
+                 <content>
+                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="634.0" prefWidth="899.0">
+                        <children>
+                        
+                                                    <!-- Menu Items List -->
+                            <ListView fx:id="menuItemsListView" prefHeight="636.0" prefWidth="901.0" />
+                        </children>
+                     </AnchorPane>
+                 </content>
+               </ScrollPane>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </children>
+</FlowPane>

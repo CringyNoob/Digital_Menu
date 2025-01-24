@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.BurgerMenuController"
+      spacing="10" alignment="CENTER" style="-fx-padding: 20;">
+
+    <Label text="Customize Your Burger" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Bread Type:"/>
+        <ChoiceBox fx:id="breadChoice" prefWidth="150">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="White Bread"/>
+                    <String fx:value="Whole Grain"/>
+                    <String fx:value="Gluten-Free"/>
+                </FXCollections>
+            </items>
+        </ChoiceBox>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Patty Type:"/>
+        <ChoiceBox fx:id="pattyChoice" prefWidth="150">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Beef"/>
+                    <String fx:value="Chicken"/>
+                    <String fx:value="Vegetarian"/>
+                </FXCollections>
+            </items>
+        </ChoiceBox>
+    </HBox>
+
+    <VBox spacing="5" alignment="CENTER_LEFT">
+        <Label text="Toppings:"/>
+        <CheckBox text="Lettuce" fx:id="lettuceCheckBox"/>
+        <CheckBox text="Tomato" fx:id="tomatoCheckBox"/>
+        <CheckBox text="Onion" fx:id="onionCheckBox"/>
+        <CheckBox text="Cheese" fx:id="cheeseCheckBox"/>
+    </VBox>
+
+    <VBox spacing="5" alignment="CENTER_LEFT">
+        <Label text="Sauces:"/>
+        <CheckBox text="Ketchup" fx:id="ketchupCheckBox"/>
+        <CheckBox text="Mayonnaise" fx:id="mayoCheckBox"/>
+        <CheckBox text="Mustard" fx:id="mustardCheckBox"/>
+        <CheckBox text="BBQ Sauce" fx:id="bbqCheckBox"/>
+    </VBox>
+
+<!--    <Button text="Place Order" fx:id="placeOrderButton" onAction="#handlePlaceOrder" style="-fx-padding: 10; -fx-font-size: 14;"/>-->
+<!---->
+</VBox>
