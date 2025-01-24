@@ -46,7 +46,7 @@ public class MenuController {
 
     private void loadLogo() {
         try {
-            Image logo = new Image(getClass().getResourceAsStream("/images/logo.png"));
+            Image logo = new Image(Objects.requireNonNull(getClass().getResourceAsStream("logo.png")));
             logoImage.setImage(logo);
         } catch (Exception e) {
             System.err.println("Failed to load logo: " + e.getMessage());
