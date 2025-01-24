@@ -19,15 +19,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MenuController {
 
-    @FXML private Label userNameLabel;
+    @FXML private ImageView logoImage;
     @FXML private FlowPane menuContainer;
 
     private int userId;
     private String userName;
-
     private final List<String> orderList = new ArrayList<>();
 
     public void setUserId(int userId) {
@@ -36,14 +36,21 @@ public class MenuController {
 
     public void setUserName(String userName) {
         this.userName = userName;
-        if (userNameLabel != null) {
-            userNameLabel.setText("Welcome, " + userName);
-        }
     }
 
     @FXML
     public void initialize() {
+        loadLogo();
         loadMenuItems();
+    }
+
+    private void loadLogo() {
+        try {
+            Image logo = new Image(getClass().getResourceAsStream("/images/logo.png"));
+            logoImage.setImage(logo);
+        } catch (Exception e) {
+            System.err.println("Failed to load logo: " + e.getMessage());
+        }
     }
 
     private void loadMenuItems() {
@@ -58,7 +65,6 @@ public class MenuController {
                 double price = rs.getDouble("item_price");
                 String imgPath = rs.getString("item_img");
 
-                // Create a card for each menu item
                 VBox card = createMenuItemCard(itemName, category, price, imgPath);
                 menuContainer.getChildren().add(card);
             }
@@ -70,35 +76,33 @@ public class MenuController {
 
     private VBox createMenuItemCard(String name, String category, double price, String imgPath) {
         VBox card = new VBox(10);
-        card.setStyle("-fx-border-color: #ccc; -fx-border-radius: 5; -fx-padding: 10; -fx-alignment: center; -fx-background-color: #f9f9f9; -fx-border-width: 1;");
+        card.setStyle("-fx-border-color: #ccc; -fx-border-radius: 10; -fx-padding: 15; -fx-alignment: center; -fx-background-color: #ffffff; -fx-border-width: 1; -fx-background-radius: 10;");
 
         ImageView imageView = new ImageView();
         try {
-            Image image = new Image(getClass().getResourceAsStream("/images/" + imgPath));
+            Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream( imgPath)));
             imageView.setImage(image);
         } catch (Exception e) {
-            imageView.setImage(new Image(getClass().getResourceAsStream("/images/default.png"))); // Default image
+            imageView.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("logo.png"))));
         }
-        imageView.setFitWidth(100);
-        imageView.setFitHeight(100);
+        imageView.setFitWidth(120);
+        imageView.setFitHeight(120);
         imageView.setPreserveRatio(true);
 
         Label nameLabel = new Label(name);
-        nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
 
-        Label categoryLabel = new Label("Category: " + category);
         Label priceLabel = new Label(String.format("Price: $%.2f", price));
-
-        Button addButton = new Button("+");
+        Button addButton = new Button("Add to Order");
         addButton.setOnAction(e -> addToOrderList(name));
 
-        card.getChildren().addAll(imageView, nameLabel, categoryLabel, priceLabel, addButton);
+        card.getChildren().addAll(imageView, nameLabel, priceLabel, addButton);
         return card;
     }
 
     private void addToOrderList(String itemName) {
         orderList.add(itemName);
-        showAlert("Success", itemName + " added to order list.");
+        showAlert("Success", itemName + " added to the order list.");
     }
 
     @FXML
@@ -110,13 +114,23 @@ public class MenuController {
             stage.setTitle("Order List");
 
             OrderListController controller = loader.getController();
-            controller.setOrderList(orderList);
+            controller.setOrderList(orderList, userId);
 
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to load order list: " + e.getMessage());
         }
+    }
+
+    @FXML
+    public void logout() {
+        // Implementation for logout
+    }
+
+    @FXML
+    public void talkToAdmin() {
+        showAlert("Talk to Admin", "This feature is under development.");
     }
 
     private void showAlert(String title, String message) {
