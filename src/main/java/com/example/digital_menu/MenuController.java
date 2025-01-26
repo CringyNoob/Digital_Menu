@@ -2,6 +2,7 @@ package com.example.digital_menu;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -125,7 +126,23 @@ public class MenuController {
 
     @FXML
     public void logout() {
-        // Implementation for logout
+        try {
+            // Clear variables
+            userId = 0;
+            userName = null;
+            orderList.clear();
+
+            // Redirect to login page
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/digital_menu/login.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) menuContainer.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Digital Menu - Login");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to logout: " + e.getMessage());
+        }
     }
 
     @FXML
