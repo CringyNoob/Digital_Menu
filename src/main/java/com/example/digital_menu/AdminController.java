@@ -69,28 +69,19 @@ public class AdminController {
     }
 
     private void startMessageUpdates() {
-        // Start a background thread for handling incoming messages
         new Thread(() -> {
             while (true) {
                 synchronized (ServerMain.clientList) {
                     for (Information info : ServerMain.clientList.values()) {
-                        try {
-                            // Read incoming messages
-                            Object obj = info.netConnection.read();
-                            if (obj instanceof Data) {
-                                Data data = (Data) obj;
-                                String message = data.message;
-
-                                // Update the admin GUI on the JavaFX Application Thread
-                                Platform.runLater(() -> messageList.getItems().add(message));
-                            }
-                        } catch (Exception e) {
-                            System.err.println("Error receiving message: " + e.getMessage());
+                        String message = info.netConnection.read();
+                        if (message != null) {
+                            // Update the admin GUI on the JavaFX thread
+                            Platform.runLater(() -> messageList.getItems().add(message));
                         }
                     }
                 }
 
-                // Sleep briefly to prevent excessive CPU usage
+                // Sleep briefly to avoid excessive CPU usage
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -104,17 +95,16 @@ public class AdminController {
     private void sendMessage() {
         String message = messageInput.getText();
         if (!message.isEmpty()) {
-            Data data = new Data();
-            data.message = "Admin: " + message;
+            String adminMessage = "Admin: " + message;
 
-            // Update the admin GUI
-            messageList.getItems().add(data.message);
+            // Display the message in the admin GUI
+            messageList.getItems().add(adminMessage);
 
-            // Send the message to all connected clients
+            // Broadcast the message to all connected clients
             new Thread(() -> {
                 synchronized (ServerMain.clientList) {
                     for (Information info : ServerMain.clientList.values()) {
-                        info.netConnection.write(data);
+                        info.netConnection.write(adminMessage);
                     }
                 }
             }).start();

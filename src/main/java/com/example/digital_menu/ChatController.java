@@ -17,10 +17,9 @@ public class ChatController {
         // Start a thread to read incoming messages
         new Thread(() -> {
             while (true) {
-                Object obj = networkConnection.read();
-                if (obj instanceof Data) {
-                    Data data = (Data) obj;
-                    Platform.runLater(() -> messageList.getItems().add(data.message));
+                String message = networkConnection.read();
+                if (message != null) {
+                    Platform.runLater(() -> messageList.getItems().add(message));
                 }
             }
         }).start();
@@ -30,18 +29,8 @@ public class ChatController {
     private void sendMessage() {
         String message = messageInput.getText();
         if (!message.isEmpty()) {
-            Data data = new Data();
-            data.message = networkConnection.username + ": " + message;
-
-            // Write the `Data` object to the server
-            networkConnection.write(data);
+            networkConnection.write(message);
             messageInput.clear();
         }
-    }
-
-
-
-    public ListView<String> getMessageList() {
-        return messageList;
     }
 }

@@ -7,38 +7,32 @@ public class ReaderWriterServer implements Runnable {
     private final NetworkConnection nc;
     private final HashMap<String, Information> clientList;
 
-    public ReaderWriterServer(String username, NetworkConnection netConnection, HashMap<String, Information> clientList) {
+    public ReaderWriterServer(String username, NetworkConnection nc, HashMap<String, Information> clientList) {
         this.username = username;
-        this.nc = netConnection;
+        this.nc = nc;
         this.clientList = clientList;
+    }
+
+    private void broadcast(String message) {
+        synchronized (clientList) {
+            for (Information info : clientList.values()) {
+                info.netConnection.write(message);
+            }
+        }
     }
 
     @Override
     public void run() {
         while (true) {
-            try {
-                Object obj = nc.read();
-                if (obj instanceof Data) {
-                    Data dataObj = (Data) obj;
-                    System.out.println("Received from " + username + ": " + dataObj.message);
+            String message = nc.read();
+            if (message != null) {
+                System.out.println("Message from " + username + ": " + message);
 
-                    // Broadcast the message to all clients
-                    broadcast(dataObj);
-                } else {
-                    System.err.println("Unsupported object received from " + username + ": " + obj.getClass());
-                }
-            } catch (Exception e) {
-                System.err.println("Error in ReaderWriterServer: " + e.getMessage());
-                break; // Exit the loop if there's a critical error
+                // Broadcast the message to all clients
+                broadcast(username + ": " + message);
+            } else {
+                System.err.println("Message from client " + username + " is null.");
             }
         }
     }
-
-    private void broadcast(Data data) {
-        for (Information info : clientList.values()) {
-            info.netConnection.write(data);
-        }
-    }
-
-
 }

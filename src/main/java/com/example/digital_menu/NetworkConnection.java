@@ -1,51 +1,42 @@
 package com.example.digital_menu;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class NetworkConnection {
-    Socket socket;
-    ObjectInputStream ois;
-    ObjectOutputStream oos;
-    String username;
+    private final Socket socket;
+    private final BufferedReader reader;
+    private final BufferedWriter writer;
 
-    public NetworkConnection(Socket sock) throws IOException {
-        socket=sock;
-        oos=new ObjectOutputStream(socket.getOutputStream());
-        ois=new ObjectInputStream(socket.getInputStream());
+    public NetworkConnection(Socket socket) throws IOException {
+        this.socket = socket;
+        this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
-    public NetworkConnection(String ip,int port) throws IOException{
-        socket=new Socket(ip, port);
-        oos=new ObjectOutputStream(socket.getOutputStream());
-        ois=new ObjectInputStream(socket.getInputStream());
+    public NetworkConnection(String ip, int port) throws IOException {
+        this(new Socket(ip, port));
     }
 
-    public void write(Object obj) {
+    public void write(String message) {
         try {
-            oos.writeObject(obj);
-            System.out.println("Sent: " + obj);
-        } catch (IOException ex) {
-            System.err.println("Failed to write: " + ex.getMessage());
+            writer.write(message);
+            writer.newLine(); // Ensure messages end with a newline
+            writer.flush(); // Flush the stream
+            System.out.println("Sent: " + message);
+        } catch (IOException e) {
+            System.err.println("Failed to write: " + e.getMessage());
         }
     }
 
-    public Object read() {
+    public String read() {
         try {
-            Object obj = ois.readObject();
-            System.out.println("Received: " + obj);
-            return obj;
-        } catch (Exception ex) {
-            System.err.println("Failed to read: " + ex.getMessage());
+            String message = reader.readLine(); // Read a line of input
+            System.out.println("Received: " + message);
+            return message;
+        } catch (IOException e) {
+            System.err.println("Failed to read: " + e.getMessage());
             return null;
         }
-    }
-
-
-
-    public Socket getSocket() {
-        return socket;
     }
 }

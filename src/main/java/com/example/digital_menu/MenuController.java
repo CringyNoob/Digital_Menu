@@ -156,7 +156,7 @@ public class MenuController {
                 // Send the username as a Data object
                 Data data = new Data();
                 data.message = userName; // Assume `userName` is set during login
-                nc.write(data);
+                nc.write(String.valueOf(data));
 
                 // Open the chat window
                 Platform.runLater(() -> openChatWindow(nc));

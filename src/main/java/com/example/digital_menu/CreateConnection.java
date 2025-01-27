@@ -6,30 +6,26 @@ public class CreateConnection implements Runnable {
     private final HashMap<String, Information> clientList;
     private final NetworkConnection nc;
 
-    public CreateConnection(HashMap<String, Information> cList, NetworkConnection nConnection) {
-        clientList = cList;
-        nc = nConnection;
+    public CreateConnection(HashMap<String, Information> clientList, NetworkConnection nc) {
+        this.clientList = clientList;
+        this.nc = nc;
     }
 
     @Override
     public void run() {
         try {
-            // Read the first object (expected to be a Data object)
-            Object obj = nc.read();
-
-            if (obj instanceof Data) {
-                Data data = (Data) obj;
-                String username = data.message;
-
+            // Read the username sent by the client
+            String username = nc.read();
+            if (username != null) {
                 System.out.println("User: " + username + " connected");
 
                 // Add the client to the client list
                 clientList.put(username, new Information(username, nc));
 
-                // Start a thread to handle communication with the client
+                // Start handling messages from the client
                 new Thread(new ReaderWriterServer(username, nc, clientList)).start();
             } else {
-                System.err.println("Received unsupported object type: " + obj.getClass());
+                System.err.println("Failed to read username during connection setup.");
             }
         } catch (Exception e) {
             System.err.println("Error in CreateConnection: " + e.getMessage());
