@@ -13,25 +13,21 @@ public class ReaderWriterServer implements Runnable {
         this.clientList = clientList;
     }
 
-    private void broadcast(String message) {
-        synchronized (clientList) {
-            for (Information info : clientList.values()) {
-                info.netConnection.write(message);
-            }
-        }
-    }
-
     @Override
     public void run() {
         while (true) {
-            String message = nc.read();
+            String message = nc.read(); // Read a message from the client
             if (message != null) {
+                String fullMessage = username + ": " + message;
+
+                // Display the message in the server's terminal for debugging
                 System.out.println("Message from " + username + ": " + message);
 
-                // Broadcast the message to all clients
-                broadcast(username + ": " + message);
+                // Pass the message to the admin for display
+                ServerMain.adminController.displayClientMessage(fullMessage, username);
             } else {
                 System.err.println("Message from client " + username + " is null.");
+                break;
             }
         }
     }

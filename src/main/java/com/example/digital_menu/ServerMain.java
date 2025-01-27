@@ -12,6 +12,7 @@ import java.util.HashMap;
 public class ServerMain extends Application {
     private static final int PORT = 12345;
     static HashMap<String, Information> clientList = new HashMap<>();
+    static AdminController adminController; // Reference to the admin controller
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -21,11 +22,12 @@ public class ServerMain extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        AdminController adminController = loader.getController();
-        startServer(adminController);
+        adminController = loader.getController(); // Get the admin controller
+
+        startServer(); // Start the server
     }
 
-    private void startServer(AdminController adminController) {
+    private void startServer() {
         new Thread(() -> {
             try (ServerSocket serverSocket = new ServerSocket(PORT)) {
                 System.out.println("Server Started...");
@@ -33,11 +35,11 @@ public class ServerMain extends Application {
                     Socket socket = serverSocket.accept();
                     NetworkConnection nc = new NetworkConnection(socket);
 
-                    // Add the connection to clientList and handle messages
+                    // Handle the new client connection
                     new Thread(new CreateConnection(clientList, nc)).start();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("Error in ServerMain: " + e.getMessage());
             }
         }).start();
     }

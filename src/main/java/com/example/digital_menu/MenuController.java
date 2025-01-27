@@ -153,10 +153,8 @@ public class MenuController {
                 // Establish connection to the server
                 NetworkConnection nc = new NetworkConnection("localhost", 12345);
 
-                // Send the username as a Data object
-                Data data = new Data();
-                data.message = userName; // Assume `userName` is set during login
-                nc.write(String.valueOf(data));
+                // Send the username as the first message to the server
+                nc.write(userName); // Assume `userName` is a field in MenuController set during login
 
                 // Open the chat window
                 Platform.runLater(() -> openChatWindow(nc));
@@ -184,6 +182,7 @@ public class MenuController {
             showAlert("Error", "Failed to open chat window.");
         }
     }
+
 
 
     private void showAlert(String title, String message) {

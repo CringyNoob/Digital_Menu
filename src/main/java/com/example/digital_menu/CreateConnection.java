@@ -14,7 +14,7 @@ public class CreateConnection implements Runnable {
     @Override
     public void run() {
         try {
-            // Read the username sent by the client
+            // Read the username from the client
             String username = nc.read();
             if (username != null) {
                 System.out.println("User: " + username + " connected");
@@ -22,7 +22,7 @@ public class CreateConnection implements Runnable {
                 // Add the client to the client list
                 clientList.put(username, new Information(username, nc));
 
-                // Start handling messages from the client
+                // Start a thread to handle communication with the client
                 new Thread(new ReaderWriterServer(username, nc, clientList)).start();
             } else {
                 System.err.println("Failed to read username during connection setup.");

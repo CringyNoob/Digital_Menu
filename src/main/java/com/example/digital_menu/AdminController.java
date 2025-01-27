@@ -19,7 +19,7 @@ public class AdminController {
     @FXML private TableColumn<Order, Timestamp> orderAtColumn;
     @FXML private ListView<String> messageList;
     @FXML private TextField messageInput;
-
+    private String currentClientUsername;
     private ObservableList<Order> orders = FXCollections.observableArrayList();
 
     public void initialize() {
@@ -35,7 +35,6 @@ public class AdminController {
 
         // Start updating orders and messages in real-time
         startOrderUpdates();
-        startMessageUpdates();
     }
 
     private void startOrderUpdates() {
@@ -68,44 +67,29 @@ public class AdminController {
         }
     }
 
-    private void startMessageUpdates() {
-        new Thread(() -> {
-            while (true) {
-                synchronized (ServerMain.clientList) {
-                    for (Information info : ServerMain.clientList.values()) {
-                        String message = info.netConnection.read();
-                        if (message != null) {
-                            // Update the admin GUI on the JavaFX thread
-                            Platform.runLater(() -> messageList.getItems().add(message));
-                        }
-                    }
-                }
-
-                // Sleep briefly to avoid excessive CPU usage
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    System.err.println("Message update thread interrupted: " + e.getMessage());
-                }
-            }
-        }).start();
+    public void displayClientMessage(String message, String username) {
+        Platform.runLater(() -> {
+            messageList.getItems().add(message); // Display the message in the admin chat
+            currentClientUsername = username;   // Update the current client for admin replies
+        });
     }
 
     @FXML
     private void sendMessage() {
         String message = messageInput.getText();
-        if (!message.isEmpty()) {
+        if (!message.isEmpty() && currentClientUsername != null) {
             String adminMessage = "Admin: " + message;
 
-            // Display the message in the admin GUI
+            // Display the admin's message in the GUI
             messageList.getItems().add(adminMessage);
 
-            // Broadcast the message to all connected clients
+            // Send the message only to the specific client
             new Thread(() -> {
-                synchronized (ServerMain.clientList) {
-                    for (Information info : ServerMain.clientList.values()) {
-                        info.netConnection.write(adminMessage);
-                    }
+                Information clientInfo = ServerMain.clientList.get(currentClientUsername);
+                if (clientInfo != null) {
+                    clientInfo.netConnection.write(adminMessage);
+                } else {
+                    System.err.println("No client found with username: " + currentClientUsername);
                 }
             }).start();
 
@@ -113,6 +97,3 @@ public class AdminController {
         }
     }
 }
-
-
-

@@ -21,8 +21,8 @@ public class NetworkConnection {
     public void write(String message) {
         try {
             writer.write(message);
-            writer.newLine(); // Ensure messages end with a newline
-            writer.flush(); // Flush the stream
+            writer.newLine(); // Ensure proper message termination
+            writer.flush();
             System.out.println("Sent: " + message);
         } catch (IOException e) {
             System.err.println("Failed to write: " + e.getMessage());
@@ -31,12 +31,16 @@ public class NetworkConnection {
 
     public String read() {
         try {
-            String message = reader.readLine(); // Read a line of input
+            String message = reader.readLine(); // Read a single line
             System.out.println("Received: " + message);
             return message;
         } catch (IOException e) {
             System.err.println("Failed to read: " + e.getMessage());
             return null;
         }
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 }

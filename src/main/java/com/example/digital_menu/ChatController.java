@@ -14,12 +14,20 @@ public class ChatController {
     public void setNetworkConnection(NetworkConnection nc) {
         this.networkConnection = nc;
 
-        // Start a thread to read incoming messages
+        // Start a thread to continuously read incoming messages
         new Thread(() -> {
             while (true) {
                 String message = networkConnection.read();
                 if (message != null) {
+                    // Update the client chat on the JavaFX Application Thread
                     Platform.runLater(() -> messageList.getItems().add(message));
+                }
+
+                // Avoid excessive CPU usage
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    System.err.println("Client message reading thread interrupted: " + e.getMessage());
                 }
             }
         }).start();
@@ -29,7 +37,7 @@ public class ChatController {
     private void sendMessage() {
         String message = messageInput.getText();
         if (!message.isEmpty()) {
-            networkConnection.write(message);
+            networkConnection.write(message); // Send message to the server
             messageInput.clear();
         }
     }
