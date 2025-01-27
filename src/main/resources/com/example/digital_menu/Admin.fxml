@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.digital_menu.AdminController" spacing="15" style="-fx-padding: 20;">
+    <Label text="Admin Dashboard" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+    <!-- Order List -->
+    <Label text="Order List" style="-fx-font-size: 18px;" />
+    <TableView fx:id="orderTable">
+        <columns>
+            <TableColumn text="Order ID" fx:id="orderIdColumn" />
+            <TableColumn text="User ID" fx:id="userIdColumn" />
+            <TableColumn text="Order Items" fx:id="orderItemsColumn" />
+            <TableColumn text="Order At" fx:id="orderAtColumn" />
+        </columns>
+    </TableView>
+
+    <!-- Messages Section -->
+    <Label text="Messages" style="-fx-font-size: 18px;" />
+    <ListView fx:id="messageList" />
+
+    <!-- Message Input -->
+    <HBox spacing="10">
+        <TextField fx:id="messageInput" promptText="Type a message..." />
+        <Button text="Send" onAction="#sendMessage" />
+    </HBox>
+</VBox>

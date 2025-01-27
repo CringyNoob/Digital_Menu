@@ -1,5 +1,6 @@
 package com.example.digital_menu;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
@@ -144,11 +146,45 @@ public class MenuController {
             showAlert("Error", "Failed to logout: " + e.getMessage());
         }
     }
-
     @FXML
     public void talkToAdmin() {
-        showAlert("Talk to Admin", "This feature is under development.");
+        new Thread(() -> {
+            try {
+                // Establish connection to the server
+                NetworkConnection nc = new NetworkConnection("localhost", 12345);
+
+                // Send the username as a Data object
+                Data data = new Data();
+                data.message = userName; // Assume `userName` is set during login
+                nc.write(data);
+
+                // Open the chat window
+                Platform.runLater(() -> openChatWindow(nc));
+            } catch (Exception e) {
+                e.printStackTrace();
+                Platform.runLater(() -> showAlert("Error", "Failed to connect to Admin."));
+            }
+        }).start();
     }
+
+    private void openChatWindow(NetworkConnection nc) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Chat.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Chat with Admin");
+
+            // Pass the connection to the ChatController
+            ChatController controller = loader.getController();
+            controller.setNetworkConnection(nc);
+
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to open chat window.");
+        }
+    }
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
